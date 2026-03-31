@@ -15,7 +15,7 @@ public class Result<T> : IResult<T>
     public string? Token { get; set; }
 
 
-    public Result<T> Success(string message)
+    public static Result<T> Success(string message)
     {
         return new Result<T>
         {
@@ -26,7 +26,7 @@ public class Result<T> : IResult<T>
         };
     }
 
-    public Result<T> Success(T data, string message)
+    public static Result<T> Success(T data, string message)
     {
         return new Result<T>
         {
@@ -37,7 +37,7 @@ public class Result<T> : IResult<T>
         };
     }
 
-    public Result<T> Success(T data, string token, string message)
+    public static Result<T> Success(T data, string token, string message)
     {
         return new Result<T>
         {
@@ -50,7 +50,7 @@ public class Result<T> : IResult<T>
     }
 
 
-    public Result<T> BadRequest(string message)
+    public static Result<T> BadRequest(string message)
     {
         return new Result<T>
         {

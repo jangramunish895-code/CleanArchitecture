@@ -6,8 +6,10 @@ namespace Shared.Interfaces;
 
 public interface IResult<T>
 {
-    Result<T> Success(string message);
-    Result<T> Success(T data, string message);
-    Result<T> Success(T data, string token, string message);
-    Result<T> BadRequest(string message);
+    public List<string> Messages { get; set; }
+    public T Data { get; set; }
+    public bool IsSuccess { get; set; }
+    public int StatusCode { get; set; }
+    public Exception? Exception { get; set; }
+    public string? Token { get; set; }
 }
