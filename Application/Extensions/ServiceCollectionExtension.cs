@@ -1,10 +1,6 @@
-﻿using Application.Interfaces.Respositories;
-using MediatR;
+﻿using MediatR;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
 using System.Reflection;
-using System.Text;
 
 namespace Application.Extensions;
 
@@ -14,11 +10,17 @@ public static class ServiceCollectionExtension
     {
         services.AddMediator();
         services.AddService();
+        services.AddMapping();
+    }
+
+    public  static void AddMapping(this IServiceCollection services)
+    {
+        services.AddAutoMapper(Assembly.GetExecutingAssembly());
     }
 
     public static void AddMediator(this IServiceCollection services)
     {
-        services.AddMediatR(x=>x.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
+        services.AddMediatR(x => x.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
     }
     public static void AddService(this IServiceCollection services)
     {

@@ -29,16 +29,22 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseAuditabl
         {
             throw new Exception($"Entity with id {id} not found.");
         }
+
+        entity.IsDeleted = true;
+        entity.IsActive = false;
+        entity.UpdatedDate = DateTime.Now;
+
+        _context.Set<T>().Update(entity);
     }
 
     public async Task<List<T>> GetAllAsync()
     {
-        return await _context.Set<T>().ToListAsync();
+        return await _context.Set<T>().Where(x=>!x.IsDeleted).ToListAsync();
     }
 
     public async Task<T> GetByIdAsync(int id)
     {
-        return await _context.Set<T>().FindAsync(id);
+        return await _context.Set<T>().Where(x=>!x.IsDeleted).FirstOrDefaultAsync(x=>x.Id==id);
     }
 
     public async Task UpdateAsync(T entity)

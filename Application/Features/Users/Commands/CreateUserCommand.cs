@@ -1,37 +1,40 @@
-﻿using Application.Interfaces.Respositories;
+﻿using Application.Commons.Mappings.Commons;
+using Application.Interfaces.Respositories;
+using AutoMapper;
 using Domain.Entities.Users;
 using MediatR;
 using Shared;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 
 namespace Application.Features.Users.Commands;
 
-public class CreateUserCommand:IRequest<Result<int>>
+public class CreateUserCommand:IRequest<Result<int>>,ICreateMapFrom<User>
 {
+    [MaxLength(20, ErrorMessage = "Name cannot exceed 20 characters.")]
     public string Name { get; set; }
+    [EmailAddress(ErrorMessage = "Invalid email address format.")]
     public string Email { get; set; }
+    [Required]
     public long MobileNo { get; set; }
 }
 
 internal class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Result<int>>
 {
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IMapper _mapper;
 
-    public CreateUserCommandHandler(IUnitOfWork unitOfWork)
+    public CreateUserCommandHandler(IUnitOfWork unitOfWork, IMapper mapper)
     {
         _unitOfWork = unitOfWork;
+        _mapper = mapper;
     }
 
     public async Task<Result<int>> Handle(CreateUserCommand request, CancellationToken cancellationToken)
     {
-        var user = new User
-        {
-            Name = request.Name,
-            Email = request.Email,
-            MobileNo = request.MobileNo,
-        };
+        var user = _mapper.Map<User>(request);
 
         await _unitOfWork.Repository<User>().CreateAsync(user);
         await _unitOfWork.Save(cancellationToken);
