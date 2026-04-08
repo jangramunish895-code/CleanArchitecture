@@ -25,15 +25,19 @@ internal class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Res
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
+    private readonly ITokenDecodeService _tokenDecodeService;
 
-    public CreateUserCommandHandler(IUnitOfWork unitOfWork, IMapper mapper)
+    public CreateUserCommandHandler(IUnitOfWork unitOfWork, IMapper mapper, ITokenDecodeService tokenDecodeService)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
+        _tokenDecodeService = tokenDecodeService;
     }
 
     public async Task<Result<int>> Handle(CreateUserCommand request, CancellationToken cancellationToken)
     {
+        int userId = _tokenDecodeService.GetUserId();
+
         var user = _mapper.Map<User>(request);
 
         await _unitOfWork.Repository<User>().CreateAsync(user);

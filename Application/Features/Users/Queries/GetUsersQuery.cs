@@ -7,6 +7,7 @@ using Shared;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.Features.Users.Queries;
 
@@ -28,7 +29,8 @@ internal class GetUsersQueryHandler : IRequestHandler<GetUsersQuery, Result<List
 
     public async Task<Result<List<GetUserDto>>> Handle(GetUsersQuery request, CancellationToken cancellationToken)
     {
-        var users = await _unitOfWork.Repository<User>().GetAllAsync();
+        var users =await _unitOfWork.Repository<User>().Entities
+                            .ToListAsync();
 
         var result = _mapper.Map<List<GetUserDto>>(users);
 
